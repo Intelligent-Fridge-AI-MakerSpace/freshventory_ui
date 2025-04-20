@@ -7,7 +7,7 @@ const path = require("path");
 const app = express();
 const port = 3001;
 app.use(cors());
-
+app.use(express.json());
 app.use('/hls', express.static(path.join(__dirname, 'public/hls')));
 
 // (optional) Enable CORS for React on different ports:
@@ -15,6 +15,8 @@ app.use((req, res, next) => {
 res.setHeader('Access-Control-Allow-Origin', '*');
   next();
 });
+
+let notifications = [];
 
 // Spawn the FFmpeg to read RTSP and encode to HLS
 const rtspUrl = 'rtsp://10.157.85.106:8554/dummy';
