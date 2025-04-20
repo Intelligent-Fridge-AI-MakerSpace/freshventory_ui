@@ -1,0 +1,51 @@
+{
+  "name": "freshinventory",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cd freshventory-ui && vite",
+    "build": "cd freshventory-ui && vite build",
+    "preview": "cd freshventory-ui && vite preview",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/express-ws": "^3.0.5",
+    "@types/node": "^22.14.1",
+    "@types/node-cron": "^3.0.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "vite": "^6.2.5"
+  },
+  "dependencies": {
+    "@ably-labs/react-hooks": "^2.1.2",
+    "@capacitor/android": "^7.2.0",
+    "@capacitor/cli": "^7.2.0",
+    "@capacitor/core": "^7.2.0",
+    "@types/serviceworker": "^0.0.131",
+    "@types/web-push": "^3.6.4",
+    "@vitejs/plugin-react-swc": "^3.8.1",
+    "ably": "^2.7.0",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-ws": "^5.0.2",
+    "flv.js": "^1.6.2",
+    "hls.js": "^1.6.2",
+    "jsmpeg-player": "^3.0.3",
+    "node-cron": "^3.0.3",
+    "path": "^0.12.7",
+    "react-player": "^2.16.0",
+    "react-toastify": "^11.0.5",
+    "rtsp-relay": "^1.9.0",
+    "web-push": "^3.6.7",
+    "ws": "^8.18.1"
+  },
+  "description": ""
+}

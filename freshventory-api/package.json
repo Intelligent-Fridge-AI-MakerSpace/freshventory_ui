@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "build": "tsc",
+    "dev": "ts-node-dev src/server.ts"
+  },
+  "devDependencies": {
+    "@types/express-ws": "^3.0.5"
+  }
+}

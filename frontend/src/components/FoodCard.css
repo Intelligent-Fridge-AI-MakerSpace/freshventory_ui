@@ -1,0 +1,26 @@
+/* ... existing food card styles ... */
+
+.food-card {
+  position: relative; /* Add this for proper button positioning */
+  overflow: visible; /* Ensure button isn't clipped */
+}
+
+.add-to-list-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 2; /* Ensure button appears above other elements */
+  padding: 8px 12px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+/* Add hover state for better visibility */
+.add-to-list-button:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
