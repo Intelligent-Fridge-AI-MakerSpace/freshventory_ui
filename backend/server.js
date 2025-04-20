@@ -1,10 +1,12 @@
 // /backend/server.js
 const express = require("express");
+const cors = require("cors");
 const { spawn } = require("child_process");
 const path = require("path");
 
 const app = express();
 const port = 3001;
+app.use(cors());
 
 app.use('/hls', express.static(path.join(__dirname, 'public/hls')));
 
@@ -15,17 +17,20 @@ res.setHeader('Access-Control-Allow-Origin', '*');
 });
 
 // Spawn the FFmpeg to read RTSP and encode to HLS
-const rtspUrl = 'rtsp://192.168.12.20:8554/dummy';
+const rtspUrl = 'rtsp://10.157.85.106:8554/dummy';
 const hlsOutput = path.join(__dirname, 'public/hls', 'index.m3u8');
 
 const FFmpeg = spawn("ffmpeg", [
-  "-rtsp_transport", 'tcp',
-  "-i", rtspUrl,
-  "-c:v", 'copy',
-  "-c:a", 'aac',
+  '-rtsp_transport', 'tcp',
+  '-re',
+  '-i', rtspUrl,
+  '-c:v', 'copy',
+  '-c:a', 'aac',
   '-f', 'hls',
-  '-hls_time', '4',
+  '-hls_time', '2',
   '-hls_list_size', '5',
+  '-hls_flags', 'delete_segments+omit_endlist',
+  '-hls_flags', 'program_date_time',
   hlsOutput,
 ]);
 
