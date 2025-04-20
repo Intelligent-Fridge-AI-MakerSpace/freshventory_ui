@@ -1,70 +1,38 @@
-console.log("server starting!");
-// server.js
-const WebSocket = require('ws');
-const express = require('express');
-const { spawn } = require('child_process');
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-function captureScreenshot() {
-  const timestamp = Date.now();
-  const outputPath = path.join(__dirname, 'screenshots', `screenshot_${timestamp}.jpg`);
-  const ffmpeg = spawn('ffmpeg', [
-    '-rtsp_transport', 'tcp',
-    '-i', RTSP_URL,
-    '-vframes', '1',
-    outputPath
-  ]);
-}
+// /backend/server.js
+const express = require("express");
+const { spawn } = require("child_process");
+const path = require("path");
+
 const app = express();
-console.log("express app started!");
+const port = 3001;
 
-const server = http.createServer(app);
-console.log("http server started!");
+app.use('/hls', express.static(path.join(__dirname, 'public/hls')));
 
-const wss = new WebSocket.Server({ server });
-console.log("websocket server started!");
-
-const RTSP_URL = 'rtsp://192.168.209.23:8554/dummy'; // Replace with your actual stream
-wss.on('connection', (ws) => {
-  console.log('[WebSocket] Client connected');
-
-  const ffmpeg = spawn('ffmpeg', [
-    '-rtsp_transport', 'tcp',
-    '-i', RTSP_URL,
-    '-f', 'mpegts',
-    '-vcodec', 'mpeg1video',
-    '-b:v', '1000k', // Adjust bitrate as needed
-    '-r', '30',
-    'pipe:1'
-  ]);
-
-  ffmpeg.stdout.on('data', (chunk) => {
-    if (ws.readyState === WebSocket.OPEN) {
-      console.log('chunk sent');
-      ws.send(chunk);
-    }
-    console.log('chunk got!');
-  });
-
-  ffmpeg.stderr.on('data', (data) => {
-    console.error(`[FFmpeg] ${data}`);
-  });
-
-  ffmpeg.on('close', () => {
-    console.log('[FFmpeg] Process closed');
-  });
-
-  ws.on('close', () => {
-    ffmpeg.kill('SIGINT');
-    console.log('[WebSocket] Client disconnected');
-  });
+// (optional) Enable CORS for React on different ports:
+app.use((req, res, next) => {
+res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
 });
 
-// Serve frontend HTML
-app.use(express.static('./public/index.html'));
+// Spawn the FFmpeg to read RTSP and encode to HLS
+const rtspUrl = 'rtsp://192.168.12.20:8554/dummy';
+const hlsOutput = path.join(__dirname, 'public/hls', 'index.m3u8');
 
-const PORT =3000;
-server.listen(PORT, () => {
-  console.log(`Server started on http://localhost:${PORT}`);
+const FFmpeg = spawn("ffmpeg", [
+  "-rtsp_transport", 'tcp',
+  "-i", rtspUrl,
+  "-c:v", 'copy',
+  "-c:a", 'aac',
+  '-f', 'hls',
+  '-hls_time', '4',
+  '-hls_list_size', '5',
+  hlsOutput,
+]);
+
+FFmpeg.stderr.on('data', d => console.error('FFmpeg:', d.toString()));
+FFmpeg.on('exit', code => console.log('FFmpeg exited with code', code));
+
+//Start the server
+app.listen(port, () => {
+  console.log(`RTSP→HLS server listening at http://localhost:${port}/hls/index.m3u8`);
 });
